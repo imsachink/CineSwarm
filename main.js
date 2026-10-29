@@ -547,6 +547,7 @@ ipcMain.handle('start-stream', async (event, { magnet, title, season, episode, r
   cleanUpStreaming();
 
   const client = await getWebTorrentClient();
+  const existing = await client.get(magnet);
 
   return new Promise((resolve, reject) => {
     let resolved = false;
@@ -588,7 +589,6 @@ ipcMain.handle('start-stream', async (event, { magnet, title, season, episode, r
     }, 30000);
 
     try {
-      const existing = client.get(magnet);
       if (existing) {
         currentTorrent = existing;
       } else {
