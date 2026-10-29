@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineSwarm Video Player</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand" id="brandLogo">
+      <img class="brand-icon" src="icon.png" alt="CineSwarm Logo" style="border-radius: 7px; object-fit: cover; box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);" />
+      <span>CineSwarm</span>
+    </div>
+
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <input id="searchInput" class="search-input" type="text" placeholder="Search any movie or TV series (e.g. Inception, Breaking Bad, Dark, Piku)..." autocomplete="off" />
+      </div>
+      <button id="searchButton" class="btn-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        Search
+      </button>
+    </div>
+
+    <div>
+      <span class="badge badge-seeds" id="appStatus">● CDN + P2P Ready</span>
+    </div>
+  </header>
+
+  <!-- Main Views Container -->
+  <main class="main-content">
+    
+    <!-- View 1: Home / Rich Netflix-Style Feed -->
+    <section id="homeView" class="view active">
+      
+      <!-- Hero Spotlight Banner -->
+      <div id="heroShowcase" class="hero-showcase">
+        <img id="heroBackdrop" class="hero-backdrop-img" src="" alt="" />
+        <div class="hero-overlay-scrim"></div>
+
+        <div class="hero-main-layout">
+          <!-- Left: Information & Actions -->
+          <div class="hero-content">
+            <div class="hero-badge-row">
+              <span class="hero-pill">Featured Spotlight</span>
+              <span id="heroRating" class="rating-badge">★ 9.3</span>
+              <span id="heroYear" class="badge badge-quality">2026</span>
+              <span id="heroGenres" class="badge badge-quality" style="border-color: rgba(168, 85, 247, 0.4); color: var(--accent-purple);">Action • Sci-Fi</span>
+              <span id="heroType" class="badge badge-seeds">⚡ 4K / 1080p Stream</span>
+            </div>
+            <h1 id="heroTitle" class="hero-title">Loading Featured...</h1>
+            <p id="heroOverview" class="hero-overview">Fetching the latest blockbusters and trending titles...</p>
+            <div class="hero-actions">
+              <button id="btnHeroStreamFast" class="btn-hero-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                ▶ Stream Now (1-Sec)
+              </button>
+              <button id="btnHeroTorrent" class="btn-secondary hero-btn-torrent">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                P2P Torrent Swarm
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Floating Portrait Poster Card Preview -->
+          <div class="hero-poster-preview">
+            <div class="hero-poster-card" id="heroPosterCard">
+              <img id="heroPosterImg" src="" alt="Featured Poster" class="hero-poster-img" />
+              <div class="hero-poster-badge" id="heroPosterQuality">4K Ultra HD</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel Navigation Controls -->
+        <button id="btnHeroPrev" class="hero-nav-btn prev" title="Previous Spotlight Title">‹</button>
+        <button id="btnHeroNext" class="hero-nav-btn next" title="Next Spotlight Title">›</button>
+
+        <!-- Carousel Pagination Dots -->
+        <div id="heroDots" class="hero-dots"></div>
+      </div>
+
+      <!-- Category Filter Pills Bar -->
+      <div class="category-filter-bar">
+        <button class="cat-chip active" data-filter="all">🔥 All Featured</button>
+        <button class="cat-chip" data-filter="recent" id="chipRecent" style="display: none;">⏱️ Continue Watching</button>
+        <button class="cat-chip" data-filter="movies">🎬 Trending Movies</button>
+        <button class="cat-chip" data-filter="series">📺 Popular TV Shows</button>
+        <button class="cat-chip" data-filter="classics">⚡ Instant P2P Classics</button>
+      </div>
+
+      <!-- Row 0: Continue Watching / Recently Watched (Hidden when empty) -->
+      <div id="sectionRecent" class="home-section" style="display: none;">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="section-title">
+            <span style="color: var(--accent-orange);">⏱️</span> Continue Watching
+          </div>
+          <button id="btnClearRecent" class="btn-clear-recent" title="Clear watch history">Clear History</button>
+        </div>
+        <div class="recent-grid" id="recentGrid">
+          <!-- Injected via renderer.js -->
+        </div>
+      </div>
+
+      <!-- Row 1: Trending Movies -->
+      <div id="sectionTrendingMovies" class="home-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span style="color: var(--accent-orange);">🔥</span> Trending Movies This Week
+          </div>
+        </div>
+        <div class="movies-grid" id="trendingMoviesGrid">
+          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-secondary);">
+            <div class="spinner" style="margin: 0 auto 16px;"></div>
+            Loading trending blockbusters...
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Popular TV Series -->
+      <div id="sectionTrendingSeries" class="home-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span style="color: var(--accent-purple);">📺</span> Binge-Worthy TV Series
+          </div>
+        </div>
+        <div class="movies-grid" id="trendingSeriesGrid">
+          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-secondary);">
+            <div class="spinner" style="margin: 0 auto 16px;"></div>
+            Loading popular TV series...
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Instant-Play P2P Classics -->
+      <div id="sectionClassics" class="home-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span style="color: var(--accent-green);">⚡</span> Instant-Play P2P Creative Commons
+          </div>
+        </div>
+        <div class="movies-grid" id="classicsGrid">
+          <!-- Injected via renderer.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- View 2: Search Results -->
+    <section id="resultsView" class="view">
+      <div class="results-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
+        <button id="btnBackHome" class="btn-secondary">← Back to Discover</button>
+        <div class="results-count" id="resultsCount">Searching...</div>
+      </div>
+
+      <!-- Tab Switcher: Movies/Shows (CDN) vs Torrent Swarms -->
+      <div class="tabs-header">
+        <button id="tabFastWeb" class="tab-btn active">
+          ⚡ Movies & TV Series (CDN Fast Stream)
+          <span class="badge badge-quality" id="badgeFastCount">0</span>
+        </button>
+        <button id="tabTorrents" class="tab-btn">
+          🌐 P2P Torrent Swarms (Full Swarm Archive)
+          <span class="badge badge-seeds" id="badgeTorrentCount">0</span>
+        </button>
+      </div>
+
+      <!-- Notice Banner when item not on CDN -->
+      <div id="cdnNoticeBanner" class="tip-banner" style="display: none; margin-bottom: 8px;">
+        <span>ℹ️ <strong>Heads up:</strong> If a specific regional movie or TV episode is not indexed on web CDN nodes, switch to the <strong>"P2P Torrent Swarms"</strong> tab above for the complete decentralized catalog.</span>
+      </div>
+
+      <!-- Panel A: Fast Web Streams Grid (Movies & Series) -->
+      <div id="panelFastWeb" class="movies-grid">
+        <!-- Injected via renderer.js -->
+      </div>
+
+      <!-- Panel B: Torrent Swarm Fallback List -->
+      <div id="panelTorrents" class="torrent-list" style="display: none;">
+        <!-- Injected via renderer.js -->
+      </div>
+    </section>
+
+    <!-- View 3: Video Player View -->
+    <section id="playerView" class="view player-view">
+      <div class="player-top-bar">
+        <button id="btnBackToResults" class="btn-secondary" title="Pause video and collapse to bottom mini-player bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          ← Back to Search (Pauses in Bottom Dock)
+        </button>
+
+        <span class="player-title" id="playerMovieTitle">Loading stream...</span>
+
+        <!-- Web Stream Server Switcher (Shown in Fast Web mode) -->
+        <div id="webServerControls" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">CDN Server:</span>
+          <select id="serverSelect" class="server-select"></select>
+          <button id="btnSwitchToTorrent" class="btn-secondary" style="border-color: rgba(34, 197, 94, 0.4); color: var(--accent-green);" title="Switch to P2P Torrent Swarm for this title/episode">
+            🌐 Switch to Torrent Swarm
+          </button>
+        </div>
+
+        <!-- Torrent Player Controls (Shown in Torrent mode) -->
+        <div id="torrentControls" style="display: none; align-items: center; gap: 8px; flex-wrap: wrap;">
+          
+          <!-- Multi-Episode / Season Pack Controls -->
+          <div id="torrentEpisodeControls" style="display: none; align-items: center; gap: 6px;">
+            <span style="font-size: 0.85rem; color: var(--accent-orange); font-weight: 700;">📺 Episode:</span>
+            <select id="torrentEpisodeSelect" class="server-select" style="max-width: 250px;"></select>
+            <button id="btnTorrentPrevEp" class="btn-secondary" title="Previous Episode in Season Pack" style="padding: 6px 10px;">⏮</button>
+            <button id="btnTorrentNextEp" class="btn-secondary" title="Next Episode in Season Pack" style="padding: 6px 10px;">⏭</button>
+          </div>
+
+          <button id="btnSwitchToFast" class="btn-secondary" style="border-color: rgba(249, 115, 22, 0.4); color: var(--accent-orange);" title="Switch to Instant Fast CDN Stream">
+            ⚡ Switch to CDN Stream
+          </button>
+          <button id="btnOpenVLC" class="btn-secondary" title="Open active stream in external VLC Media Player">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L4 19h16L12 2zm0 3.8L15.3 12H8.7L12 5.8zM7.8 14h8.4l1.4 3H6.4l1.4-3zM2 21h20v2H2v-2z"/>
+            </svg>
+            Open in External VLC
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Display Container -->
+      <div class="video-wrapper">
+        <!-- Player 1: Fast Web Stream (iframe embed with ad-shield) -->
+        <iframe id="webPlayerFrame" class="web-stream-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+
+        <!-- Player 2: P2P Torrent Stream (HTML5 video) -->
+        <video id="videoPlayer" controls preload="auto" style="display: none;"></video>
+
+        <!-- Buffering Overlay for Torrent Mode -->
+        <div id="bufferingOverlay" class="buffering-overlay" style="display: none;">
+          <div class="spinner"></div>
+          <h3 id="overlayStatus">Connecting to peers...</h3>
+          <p id="overlaySubtext" style="color: var(--text-secondary); font-size: 0.9rem;">
+            Discovering torrent swarm & requesting video pieces...
+          </p>
+        </div>
+      </div>
+
+      <!-- Real-time Torrent Swarm HUD (Shown in Torrent mode) -->
+      <div id="torrentHud" class="stream-hud" style="display: none;">
+        <div class="hud-stat">
+          <span class="hud-label">Download Speed</span>
+          <span class="hud-value" id="hudSpeed">0 KB/s</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Connected Peers</span>
+          <span class="hud-value" id="hudPeers">0</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Stream Progress</span>
+          <span class="hud-value" id="hudProgress">0%</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Playing File Size</span>
+          <span class="hud-value" id="hudSize">-</span>
+        </div>
+      </div>
+
+      <!-- Season Pack Episodes Drawer / Bottom Bar (when multiple files exist) -->
+      <div id="torrentPlaylistBar" style="display: none; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; flex-direction: column; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: var(--accent-orange);">📺 Complete Season Pack Episodes:</span>
+            <span id="torrentPlaylistCount" class="badge badge-quality">0 episodes</span>
+          </span>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Click any episode to switch playback instantly</span>
+        </div>
+        <div id="torrentPlaylistGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
+          <!-- Injected via renderer.js -->
+        </div>
+      </div>
+
+      <div class="tip-banner">
+        <span>💡 <strong>Quick Navigation:</strong> Click <strong>"← Back to Search"</strong> at any time. Playback automatically pauses and rests in the bottom dock so you can browse quietly!</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Floating Bottom Mini-Player Bar (With PAUSE on Minimize) -->
+  <div id="miniPlayerBar" class="mini-player-bar">
+    <div id="miniPlayerClickable" class="mini-player-left" title="Click anywhere to expand player">
+      <span id="miniStatusBadge" class="mini-status-badge paused">⏸ Paused</span>
+      <div class="mini-player-info">
+        <span class="mini-player-title" id="miniTitle">Movie Title</span>
+        <span class="mini-player-sub" id="miniSub">Paused in Bottom Dock • Click to Resume</span>
+      </div>
+    </div>
+    <div class="mini-player-actions">
+      <!-- Play/Pause Toggle in Dock -->
+      <button id="btnMiniTogglePlay" class="btn-mini-play" title="Play / Resume">▶</button>
+      <!-- Expand to Fullscreen Player -->
+      <button id="btnMiniExpand" class="btn-mini-action expand" title="Expand to Full Player">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        Expand
+      </button>
+      <!-- Close / Stop Stream -->
+      <button id="btnMiniClose" class="btn-mini-action close-btn" title="Stop & Close Playback">✕</button>
+    </div>
+  </div>
+
+  <!-- Modal: TV Series Season & Episode Picker (CDN) -->
+  <div id="seriesModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="seriesModalTitle">Select Episode</div>
+        <button id="btnCloseModal" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="seasonSelectorBar" class="season-selector-bar">
+          <!-- Season chips injected via renderer.js -->
+        </div>
+        <div id="episodesList" class="episodes-list">
+          <!-- Episodes injected via renderer.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

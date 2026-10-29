@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Production builds & compiled bundles
+dist/
+build/
+out/
+*.app/
+CineSwarm.app/
+
+# macOS system metadata & custom icons
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+
+# Logs & temporary files
+*.log
+npm-debug.log*
+
+# Environment & local agent metadata
+.env
+.env.local
+.agents/
