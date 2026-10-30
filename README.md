@@ -45,21 +45,21 @@ Because **CineSwarm** is an open-source indie application without an expensive e
 
 ---
 
-### 🍏 macOS Installation & "Unidentified Developer" Fix
+### 🍏 macOS Installation & Gatekeeper Fix
 
 1. Download `CineSwarm.dmg`.
 2. Double-click the `.dmg` file and drag **CineSwarm** into your **Applications** folder.
-3. If macOS displays: *"CineSwarm cannot be opened because Apple cannot check it for malicious software"*:
-   - **Method A (Fastest):**
-     1. Open your **Applications** folder in Finder.
-     2. **Right-click (or Control-click)** on `CineSwarm.app`.
-     3. Click **Open** from the context menu.
-     4. Click **Open** in the confirmation popup. (You only need to do this once).
+3. If macOS displays: *"CineSwarm cannot be opened because Apple cannot check it for malicious software"* or *"damaged and cannot be opened"*:
+   - **Method A (Guaranteed — Terminal one-liner):**
+     Open **Terminal** and run:
+     ```bash
+     xattr -cr /Applications/CineSwarm.app
+     ```
+     This removes the macOS download quarantine flag and allows CineSwarm to launch immediately.
    - **Method B (via System Settings):**
      1. Open **System Settings** ➔ **Privacy & Security**.
      2. Scroll down to the **Security** section.
-     3. You will see: *"CineSwarm was blocked from use because it is not from an identified developer"*.
-     4. Click **"Open Anyway"** and enter your Mac password.
+     3. Click **"Open Anyway"** next to *CineSwarm* and enter your Mac password.
 
 ---
 
