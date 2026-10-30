@@ -1,6 +1,6 @@
 {
   "name": "cineswarm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CineSwarm - High-Speed Web & P2P Swarm Media Player",
   "author": "Sachin Kaundal",
   "license": "MIT",
@@ -44,6 +44,8 @@
         "zip"
       ],
       "icon": "CineSwarm.icns",
+      "identity": "-",
+      "hardenedRuntime": false,
       "category": "public.app-category.video"
     }
   }
